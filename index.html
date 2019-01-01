@@ -50,7 +50,18 @@
 $(document).ready(function(){
 
    $("#Input").on("input", function(){
-    var input = $("#Input").val().replace(/(.+)/g,"<div dir=\"rtl\"> $1 </div> "+ "/n");
+    var input = "";
+    
+    input = $("#Input").val().replace(/^(?!\*)(.+)/gm,"<div dir=\"rtl\"> $1 </div> "+ "/n");
+
+    input = input.replace(/(^\*(.+))/gm,"<div dir=\"rtl\"> <b>$2</b> </div> "+ "/n");
+   // alert(input);
+
+    //alert(input);
+
+    // input = $("#Input").val().replace(/(.+)/g,"<div dir=\"rtl\"> $1 </div> "+ "/n");
+    // input = $("#Input").val().replace(/(\*(.+))/g,"<div dir=\"rtl\"> <b>$2</b> </div> "+ "/n");
+
    $("Output").text(input);
   });
 });
