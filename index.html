@@ -1,3 +1,64 @@
-<body>
-Test
-</body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    <script>
+    $(document).ready(function(){
+        function setWordOrder(e) {
+        if (e.key == " ") {
+            var textbox = document.getElementById("mytextarea");
+            textbox.value += "\u200F";
+        }
+      } 
+    });
+    </script>
+
+
+
+
+
+    <html>
+    <body>
+            <style>
+        div.InputField {
+                text-align: center;
+                resize: none;
+            }
+        
+            Output{ white-space:pre-wrap; }
+        
+        #mytextarea{
+            resize: none;
+        }
+
+            </style>
+
+    <div class="InputField">
+        
+
+        <h1>Right To Left MarkDown</h1>
+        Text:
+        <br>
+        <textarea dir = "rtl" rows="12" cols="100" style="font-family:monospace" id = "Input" onkeyup="setWordOrder(event)"></textarea>   
+
+        <br>
+        <br>
+        Output:
+        <hr>
+        <div height="100%" width="100%" id="b"></div>
+    </div>
+
+<script>
+$(document).ready(function(){
+
+   $("#Input").on("input", function(){
+    var input = $("#Input").val().replace(/(.+)/g,"<div dir=\"rtl\"> $1 </div> "+ "/n");
+   $("Output").text(input);
+  });
+});
+</script>
+
+<Output>
+
+</Output>
+
+    </body>
+    </html>
