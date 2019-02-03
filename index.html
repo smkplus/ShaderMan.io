@@ -92,6 +92,22 @@ $("#Copy").click(function(){
 	#pragma vertex vert
 	#pragma fragment frag
 	#include "UnityCG.cginc"
+			
+    
+
+    float3 vec4(float x,float y,float z,float w){return float4(x,y,z,w);}
+    float3 vec4(float x){return float4(x,x,x,x);}
+
+    float3 vec3(float x,float y,float z){return float3(x,y,z);}
+    float3 vec3(float x){return float3(x,x,x);}
+
+    float2 vec2(float x,float y){return float2(x,y);}
+    float2 vec2(float x){return float2(x,x);}
+
+    float vec(float x){return float(x);}
+    
+    
+
 	struct VertexInput {
     float4 vertex : POSITION;
 	float2 uv:TEXCOORD0;
@@ -105,7 +121,7 @@ $("#Copy").click(function(){
 	//VertexOutput
 	};
 	//Variables
-	//Functions
+	
 	VertexOutput vert (VertexInput v)
 	{
 	VertexOutput o;
@@ -114,6 +130,10 @@ $("#Copy").click(function(){
 	//VertexFactory
 	return o;
 	}
+    
+    //Functions
+    
+    
 	fixed4 frag(VertexOutput i) : SV_Target
 	{
 	//MainImage
@@ -126,11 +146,21 @@ $("#Copy").click(function(){
     input = $("#Input").val();
 
     
-    input = input.replace(/(vec)/gm,"CgFloat");
+    //input = input.replace(/(vec4)/gm,float4);
+    //input = input.replace(/vec3(?!\()/gm,float3);
+   // input = input.replace(/(vec2(?!\()/,float2);
+    //input = input.replace(/(vec(?!\d|\()/,float2);
+
+    
+
+    input = input.replace(/(vec4(?!\())/gm,"float4");
+    input = input.replace(/(vec3(?!\())/gm,"float3");
+    input = input.replace(/(vec2(?!\())/gm,"float2");
+    input = input.replace(/(vec(?!\d|\())/gm,"float");
 
     input = input.replace(/(mat2)/gm,"float4x4");
-    input = input.replace(/(mat3)/gm,"float4x4");
-    input = input.replace(/(mat4)/gm,"float4x4");
+    input = input.replace(/(mat3)/gm,"float3x3");
+    input = input.replace(/(mat4)/gm,"float3x3");
     
     input = input.replace(/(mix)/gm,"lerp");
 
@@ -146,12 +176,13 @@ $("#Copy").click(function(){
     input = input.replace(/(iChannel3)/gm,"_FourthTex");
     input = input.replace(/(iMouse)/gm,"_iMouse");
     
-   var mainImage = input.match(/void\s+mainImage[^\{]+\{([^}]+)\}/gm);
-   var functions = input.replace(/void\s+mainImage[^\{]+\{([^}]+)/gm,"");
+var myRegexp = /void\s+mainImage[^\{]+\{(.+)\}$/gms;
+var match = myRegexp.exec(input);
    
+    var functions = input.replace(/void\s+mainImage[^\{]+\{(.+)\}$/gm,"");
    BaseShader = BaseShader.replace(/ShaderName/gm,$("#ShaderName").val());
-   BaseShader = BaseShader.replace(/(\/\/MainImage)/gm,mainImage);
-   BaseShader = BaseShader.replace(/(Functions)/gm,functions);
+   BaseShader = BaseShader.replace(/(\/\/MainImage)/gm,match[1]);
+   BaseShader = BaseShader.replace(/(\/\/Functions)/gm,functions);
    
 	$("#Output").text(BaseShader);
 	
