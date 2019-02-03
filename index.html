@@ -64,17 +64,89 @@ $("#Copy").click(function(){
     document.execCommand("copy");
     alert("Copied");
 });
+
    $("#Input").on("input", function(){
     var input = "";
+
+
+    var BaseShader = `
+    Shader "ShaderMan/ShaderName
+	{
+	Properties{
+	//Properties
+	}
+	SubShader
+	{
+	Tags { "RenderType = "Transparent "Queue = "Transparent" }
+	Pass
+	{
+	ZWrite Off
+	Blend SrcAlpha OneMinusSrcAlpha
+	CGPROGRAM
+	#pragma vertex vert
+	#pragma fragment frag
+	#include ""UnityCG.cginc""
+	struct VertexInput {
+    float4 vertex : POSITION;
+	float2 uv:TEXCOORD0;
+    float4 tangent : TANGENT;
+    float3 normal : NORMAL;
+	//VertexInput
+	};
+	struct VertexOutput {
+	float4 pos : SV_POSITION;
+	float2 uv:TEXCOORD0;
+	//VertexOutput
+	};
+	//Variables
+	//Functions
+	VertexOutput vert (VertexInput v)
+	{
+	VertexOutput o;
+	o.pos = UnityObjectToClipPos (v.vertex);
+	o.uv = v.uv;
+	//VertexFactory
+	return o;
+	}
+	fixed4 frag(VertexOutput i) : SV_Target
+	{
+	//MainImage
+	}
+	ENDCG
+	}
+  }
+}
+";
+
+	}
+`;
     
     input = $("#Input").val();
     
     input = input.replace(/(vec)/gm,"CgFloat");
+
+    input = input.replace(/(mat2)/gm,"float4x4");
+    input = input.replace(/(mat3)/gm,"float4x4");
+    input = input.replace(/(mat4)/gm,"float4x4");
+    
     input = input.replace(/(mix)/gm,"lerp");
+
+    input = input.replace(/(iGlobalTime)/gm,"_Time.y");
+    input = input.replace(/(fract)/gm,"frac");
+    input = input.replace(/(fragColor)/gm,"return");
+    input = input.replace(/(texture)/gm,"tex2D");
+    input = input.replace(/(tex2DLod)/gm,"tex2Dlod");
+    input = input.replace(/(refrac)/gm,"refract");
+    input = input.replace(/(iChannel0)/gm,"_MainTex");
+    input = input.replace(/(iChannel1)/gm,"_SecondTex");
+    input = input.replace(/(iChannel2)/gm,"_ThirdTex");
+    input = input.replace(/(iChannel3)/gm,"_FourthTex");
+    input = input.replace(/(iMouse)/gm,"_iMouse");
 
    $("#Output").text(input.replace(/\/n/gm,""));
   });
 });
+
 </script>
 
 
