@@ -37,7 +37,7 @@
     <div class="InputField">
         
 
-        <h1>Right To Left MarkDown</h1>
+        <h1>ShaderMan</h1>
         Text:
         <br>
         <textarea spellcheck="false" dir = "rtl"  rows="12" cols="100" style="font-family:monospace" id = "Input" onkeyup="setWordOrder(event)"></textarea>   
@@ -68,8 +68,9 @@ $("#Copy").click(function(){
     var input = "";
     
     input = $("#Input").val().replace(/^(?!\*|\#)(.+)/gm,"<div dir=\"rtl\"> $1 </div> "+ "/n");
-    input = input.replace(/(^\#(.+))/gm,"<div dir=\"rtl\"> <h1>$2</h1> </div> "+ "/n");
-    input = input.replace(/(^\*(.+))/gm,"<div dir=\"rtl\"> <b>$2</b> </div> "+ "/n");
+    
+    input = input.replace(/(vec)/gm,"CgFloat");
+    input = input.replace(/(mix)/gm,"lerp");
    // alert(input);
 
     //alert(input);
