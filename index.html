@@ -19,6 +19,7 @@
     <body>
             <style>
         div.InputField {
+                text-align: center;
                 resize: none;
             }
         
@@ -36,6 +37,13 @@
         
 
         <h1>ShaderMan</h1>
+        ShaderName:
+        
+        <input type="text" id = "ShaderName" name="FirstName" value="MyShader">
+        
+        <br>
+        
+        
         Text:
         <br>
         <textarea spellcheck="false" rows="12" cols="100" style="font-family:monospace" id = "Input" onkeyup="setWordOrder(event)"></textarea>   
@@ -114,12 +122,11 @@ $("#Copy").click(function(){
 	}
   }
 }
-";
-
-	}
+}
 `;
     
     input = $("#Input").val();
+
     
     input = input.replace(/(vec)/gm,"CgFloat");
 
@@ -140,8 +147,20 @@ $("#Copy").click(function(){
     input = input.replace(/(iChannel2)/gm,"_ThirdTex");
     input = input.replace(/(iChannel3)/gm,"_FourthTex");
     input = input.replace(/(iMouse)/gm,"_iMouse");
+    
+   var mainImage = input.match(/void\s+mainImage[^\{]+\{([^}]+)\}/gm);
+   var functions = input.replace(/void\s+mainImage[^\{]+\{([^}]+)/gm,"");
+   
+   BaseShader = BaseShader.replace(/ShaderName/gm,$("#ShaderName").val());
+   BaseShader = BaseShader.replace(/(\/\/MainImage)/gm,mainImage);
+   BaseShader = BaseShader.replace(/(Functions)/gm,functions);
+   
+   //$("#Output").text(input.replace(/\/n/gm,""));
+	$("#Output").text(BaseShader);
+	
+    
 
-   $("#Output").text(input.replace(/\/n/gm,""));
+       
   });
 });
 
