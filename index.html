@@ -40,7 +40,7 @@
         <h1>ShaderMan</h1>
         Text:
         <br>
-        <textarea spellcheck="false" dir = "rtl"  rows="12" cols="100" style="font-family:monospace" id = "Input" onkeyup="setWordOrder(event)"></textarea>   
+        <textarea spellcheck="false" rows="12" cols="100" style="font-family:monospace" id = "Input" onkeyup="setWordOrder(event)"></textarea>   
 
         <br>
         Output:
@@ -67,16 +67,10 @@ $("#Copy").click(function(){
    $("#Input").on("input", function(){
     var input = "";
     
-    input = $("#Input").val().replace(/^(?!\*|\#)(.+)/gm,"<div dir=\"rtl\"> $1 </div> "+ "/n");
+    input = $("#Input").val();
     
     input = input.replace(/(vec)/gm,"CgFloat");
     input = input.replace(/(mix)/gm,"lerp");
-   // alert(input);
-
-    //alert(input);
-
-    // input = $("#Input").val().replace(/(.+)/g,"<div dir=\"rtl\"> $1 </div> "+ "/n");
-    // input = $("#Input").val().replace(/(\*(.+))/g,"<div dir=\"rtl\"> <b>$2</b> </div> "+ "/n");
 
    $("#Output").text(input.replace(/\/n/gm,""));
   });
