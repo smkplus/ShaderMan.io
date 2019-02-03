@@ -76,14 +76,14 @@ $("#Copy").click(function(){
 
 
     var BaseShader = `
-    Shader "ShaderMan/ShaderName
+    Shader "ShaderMan/ShaderName"
 	{
 	Properties{
 	//Properties
 	}
 	SubShader
 	{
-	Tags { "RenderType = "Transparent "Queue = "Transparent" }
+	Tags { "RenderType" = "Transparent" "Queue" = "Transparent" }
 	Pass
 	{
 	ZWrite Off
@@ -91,7 +91,7 @@ $("#Copy").click(function(){
 	CGPROGRAM
 	#pragma vertex vert
 	#pragma fragment frag
-	#include ""UnityCG.cginc""
+	#include "UnityCG.cginc"
 	struct VertexInput {
     float4 vertex : POSITION;
 	float2 uv:TEXCOORD0;
@@ -121,8 +121,6 @@ $("#Copy").click(function(){
 	ENDCG
 	}
   }
-}
-}
 `;
     
     input = $("#Input").val();
@@ -155,7 +153,6 @@ $("#Copy").click(function(){
    BaseShader = BaseShader.replace(/(\/\/MainImage)/gm,mainImage);
    BaseShader = BaseShader.replace(/(Functions)/gm,functions);
    
-   //$("#Output").text(input.replace(/\/n/gm,""));
 	$("#Output").text(BaseShader);
 	
     
