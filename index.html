@@ -175,13 +175,15 @@ $("#Copy").click(function(){
     input = input.replace(/(iChannel2)/gm,"_ThirdTex");
     input = input.replace(/(iChannel3)/gm,"_FourthTex");
     input = input.replace(/(iMouse)/gm,"_iMouse");
-    
-var myRegexp = /void\s+mainImage[^\{]+\{(.+)\}$/gms;
-var match = myRegexp.exec(input);
+
+    var functions = input.replace(/void\s+mainImage[^\{]+\{(.+)\}$/gms,"");
+
+var mainImageRegex = /void\s+mainImage[^\{]+\{(.+)\}$/gms;
+var mainImagematch = mainImageRegex.exec(input);
    
-    var functions = input.replace(/void\s+mainImage[^\{]+\{(.+)\}$/gm,"");
+  
    BaseShader = BaseShader.replace(/ShaderName/gm,$("#ShaderName").val());
-   BaseShader = BaseShader.replace(/(\/\/MainImage)/gm,match[1]);
+   BaseShader = BaseShader.replace(/(\/\/MainImage)/gm,mainImagematch[1]);
    BaseShader = BaseShader.replace(/(\/\/Functions)/gm,functions);
    
 	$("#Output").text(BaseShader);
