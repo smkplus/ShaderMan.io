@@ -95,11 +95,15 @@ $("#Copy").click(function(){
 			
     
 
-    float3 vec4(float x,float y,float z,float w){return float4(x,y,z,w);}
-    float3 vec4(float x){return float4(x,x,x,x);}
+    float4 vec4(float x,float y,float z,float w){return float4(x,y,z,w);}
+    float4 vec4(float x){return float4(x,x,x,x);}
+    float4 vec4(float2 x,float2 y){return float4(float2(x.x,x.y),float2(y.x,y.y));}
+    float4 vec4(float3 x,float y){return float4(float3(x.x,x.y,x.z),y);}
+
 
     float3 vec3(float x,float y,float z){return float3(x,y,z);}
     float3 vec3(float x){return float3(x,x,x);}
+    float3 vec3(float2 x,float y){return float3(float2(x.x,x.y),y);}
 
     float2 vec2(float x,float y){return float2(x,y);}
     float2 vec2(float x){return float2(x,x);}
@@ -141,15 +145,10 @@ $("#Copy").click(function(){
 	ENDCG
 	}
   }
+  }
 `;
     
     input = $("#Input").val();
-
-    
-    //input = input.replace(/(vec4)/gm,float4);
-    //input = input.replace(/vec3(?!\()/gm,float3);
-   // input = input.replace(/(vec2(?!\()/,float2);
-    //input = input.replace(/(vec(?!\d|\()/,float2);
 
     
 
@@ -166,7 +165,7 @@ $("#Copy").click(function(){
 
     input = input.replace(/(iGlobalTime)/gm,"_Time.y");
     input = input.replace(/(fract)/gm,"frac");
-    input = input.replace(/(fragColor)/gm,"return");
+    input = input.replace(/(fragColor\s*=)/gm,"return");
     input = input.replace(/(texture)/gm,"tex2D");
     input = input.replace(/(tex2DLod)/gm,"tex2Dlod");
     input = input.replace(/(refrac)/gm,"refract");
@@ -175,6 +174,30 @@ $("#Copy").click(function(){
     input = input.replace(/(iChannel2)/gm,"_ThirdTex");
     input = input.replace(/(iChannel3)/gm,"_FourthTex");
     input = input.replace(/(iMouse)/gm,"_iMouse");
+    
+    input = input.replace(/(iResolution.((x|y){1,2})?)/gm,"1");
+    input = input.replace(/(fragCoord.xy\s*\/\s*iResolution.xy)/gm,"i.uv");
+    input = input.replace(/(fragCoord(.xy)?)/gm,"i.uv");
+    input = input.replace(/(iResolution(\.(x|y){1,2})?)/gm,"1");
+    
+    input = input.replace(/mod/gm,"fmod");
+    input = input.replace(/for\(/gm,"[unroll(100)]\nfor(");
+    input = input.replace(/iTime/gm,"_Time.y");
+    
+    input = input.replace(/(tex2Dlod\()([^,]+\,)([^)]+\)?[)]+.+(?=\)))/gm,"$1$2float4($3,0)");
+    input = input.replace(/fixed4\(([^(,]+?)\)/gm,"fixed4($1,$1,$1,$1)");
+    input = input.replace(/fixed3\(([^(,]+?)\)/gm,"fixed3($1,$1,$1)");
+    input = input.replace(/fixed2\(([^(,]+?)\)/gm,"fixed2($1,$1)");
+    input = input.replace(/tex2D\(([^,]+)\,\s*fixed2\(([^,].+)\)\,(.+)\)/gm,"tex2Dlod($1,fixed4($2,fixed2($3,$3)))");//when vec3 col = texture( iChannel0, vec2(uv.x,1.0-uv.y), lod ).xyz; -> https://www.shadertoy.com/view/4slGWn
+    
+    input = input.replace(/texelFetch/gm,"tex2D)");//badan bokonesh texlod
+    input = input.replace(/atan\(([^,]+?)\,([^,]+?)\)/gm,"atan2($2,$1)"); //badan bokonesh texlod
+    
+    input = input.replace(/([*+\\/-])\\s*(pi|PI)/gm,"$13.14159265359");
+
+	  input = input.replace(/(gl_FragCoord)/gm,"(i.screenCoord.xy/i.screenCoord.w)*_ScreenParams.xy)");
+    
+
 
     var functions = input.replace(/void\s+mainImage[^\{]+\{(.+)\}$/gms,"");
 
