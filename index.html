@@ -44,12 +44,13 @@
         <br>
         
         
-        Text:
+        ShaderMan:
         <br>
         <textarea spellcheck="false" rows="12" cols="100" style="font-family:monospace" id = "Input" onkeyup="setWordOrder(event)"></textarea>   
 
-        <br>
-        Output:
+        <h2>To</h2>
+
+        UnityShader:
 
         <div height="100%" width="100%" id="b"></div>
 
@@ -92,6 +93,8 @@ $("#Copy").click(function(){
 	#pragma vertex vert
 	#pragma fragment frag
 	#include "UnityCG.cginc"
+			
+    
 
     float4 vec4(float x,float y,float z,float w){return float4(x,y,z,w);}
     float4 vec4(float x){return float4(x,x,x,x);}
@@ -109,6 +112,7 @@ $("#Copy").click(function(){
     float vec(float x){return float(x);}
     
     
+
 	struct VertexInput {
     float4 vertex : POSITION;
 	float2 uv:TEXCOORD0;
@@ -134,7 +138,8 @@ $("#Copy").click(function(){
     
     //Functions
     
-	fixed4 frag(VertexOutput i) : SV_Target
+    
+	fixed4 frag(VertexOutput vertex_output) : SV_Target
 	{
 	//MainImage
 	}
@@ -172,8 +177,8 @@ $("#Copy").click(function(){
     input = input.replace(/(iMouse)/gm,"_iMouse");
     
     input = input.replace(/(iResolution.((x|y){1,2})?)/gm,"1");
-    input = input.replace(/(fragCoord.xy\s*\/\s*iResolution.xy)/gm,"i.uv");
-    input = input.replace(/(fragCoord(.xy)?)/gm,"i.uv");
+    input = input.replace(/(fragCoord.xy\s*\/\s*iResolution.xy)/gm,"vertex_output.uv");
+    input = input.replace(/(fragCoord(.xy)?)/gm,"vertex_output.uv");
     input = input.replace(/(iResolution(\.(x|y){1,2})?)/gm,"1");
     
     input = input.replace(/mod/gm,"fmod");
@@ -192,7 +197,7 @@ $("#Copy").click(function(){
     input = input.replace(/([*+\\/-])\\s*(pi|PI)/gm,"$13.14159265359");
 
 	  input = input.replace(/(gl_FragCoord)/gm,"(i.screenCoord.xy/i.screenCoord.w)*_ScreenParams.xy)");
-    //input = input.replace(/#ifdef\s*GL_ES[^#].+#endif/gms,"");
+    input = input.replace(/#ifdef\s*GL_ES[^#].+#endif/gms,"");
     
 
 
@@ -206,6 +211,28 @@ var mainImagematch = mainImageRegex.exec(input);
    BaseShader = BaseShader.replace(/(\/\/MainImage)/gm,mainImagematch[1]);
    BaseShader = BaseShader.replace(/(\/\/Functions)/gm,functions);
    
+   var properties = "";
+   var variables = "";
+   
+   if(input.includes("_MainTex")){
+   properties += '_MainTex("MainTex",2D) = "white"{} \n';
+   variables += 'sampler2D _MainTex; \n';
+	 }
+   if(input.includes("_SecondTex")){
+   properties += '_SecondTex("SecondTex",2D) = "white"{} \n';
+   variables += 'sampler2D _SecondTex; \n';
+	 }
+   if(input.includes("_ThirdTex")){
+   properties += '_ThirdTex("ThirdTex",2D) = "white"{} \n';
+   variables += 'sampler2D _ThirdTex; \n';
+	 }
+   if(input.includes("_FourthTex")){
+   properties += '_FourthTex("FourthTex",2D) = "white"{} \n';
+   variables += 'sampler2D _FourthTex; \n';
+	 }
+   
+   BaseShader = BaseShader.replace(/(\/\/Properties)/gm,properties);
+   BaseShader = BaseShader.replace(/(\/\/Variables)/gm,variables);
 	$("#Output").text(BaseShader);
 	
     
