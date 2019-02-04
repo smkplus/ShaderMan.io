@@ -92,8 +92,6 @@ $("#Copy").click(function(){
 	#pragma vertex vert
 	#pragma fragment frag
 	#include "UnityCG.cginc"
-			
-    
 
     float4 vec4(float x,float y,float z,float w){return float4(x,y,z,w);}
     float4 vec4(float x){return float4(x,x,x,x);}
@@ -111,7 +109,6 @@ $("#Copy").click(function(){
     float vec(float x){return float(x);}
     
     
-
 	struct VertexInput {
     float4 vertex : POSITION;
 	float2 uv:TEXCOORD0;
@@ -136,7 +133,6 @@ $("#Copy").click(function(){
 	}
     
     //Functions
-    
     
 	fixed4 frag(VertexOutput i) : SV_Target
 	{
@@ -196,6 +192,7 @@ $("#Copy").click(function(){
     input = input.replace(/([*+\\/-])\\s*(pi|PI)/gm,"$13.14159265359");
 
 	  input = input.replace(/(gl_FragCoord)/gm,"(i.screenCoord.xy/i.screenCoord.w)*_ScreenParams.xy)");
+    //input = input.replace(/#ifdef\s*GL_ES[^#].+#endif/gms,"");
     
 
 
