@@ -12,9 +12,6 @@
     </script>
 
 
-
-
-
     <html>
     <body>
             <style>
@@ -44,11 +41,10 @@
         <br>
         
         
-        ShaderMan:
+        ShaderToy:
         <br>
         <textarea spellcheck="false" rows="12" cols="100" style="font-family:monospace" id = "Input" onkeyup="setWordOrder(event)"></textarea>   
 
-        <h2>To</h2>
         <br>
         UnityShader:
         <br>    
@@ -165,6 +161,8 @@ $("#Copy").click(function(){
     input = input.replace(/(mix)/gm,"lerp");
 
     input = input.replace(/(iGlobalTime)/gm,"_Time.y");
+    input = input.replace(/iTime/gm,"_Time.y");
+
     input = input.replace(/(fract)/gm,"frac");
     input = input.replace(/(fragColor\s*=)/gm,"return");
     input = input.replace(/(texture)/gm,"tex2D");
@@ -183,7 +181,7 @@ $("#Copy").click(function(){
     
     input = input.replace(/mod/gm,"fmod");
     input = input.replace(/for\(/gm,"[unroll(100)]\nfor(");
-    input = input.replace(/iTime/gm,"_Time.y");
+
     
     input = input.replace(/(tex2Dlod\()([^,]+\,)([^)]+\)?[)]+.+(?=\)))/gm,"$1$2float4($3,0)");
     input = input.replace(/fixed4\(([^(,]+?)\)/gm,"fixed4($1,$1,$1,$1)");
