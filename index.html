@@ -15,6 +15,14 @@
     <html>
     <body>
             <style>
+            body {
+  color: white;
+  
+}
+
+h1 {
+  color: white;
+}
         div.InputField {
                 text-align: center;
                 resize: none;
@@ -255,5 +263,194 @@ var mainImagematch = mainImageRegex.exec(input);
 </script>
 
 
+
     </body>
     </html>
+    
+    
+
+
+<background>
+
+    <style>
+    background {
+    z-index : -9999;
+    position: absolute;
+    top : 0;
+    left    : 0;
+    width   : 100%;
+    height  : 100%;
+    margin  : 0;
+    padding : 0;
+}
+</style>
+
+    <div id="container"></div>
+    <script src="js/three.min.js"></script>
+    <script id="vertexShader" type="x-shader/x-vertex">
+        void main() {
+            gl_Position = vec4( position, 1.0 );
+        }
+    </script>
+    <script id="fragmentShader" type="x-shader/x-fragment">
+// Author @patriciogv - 2015
+// http://patriciogonzalezvivo.com
+
+#ifdef GL_ES
+precision mediump float;
+#endif
+
+uniform vec2 u_resolution;
+uniform vec2 u_mouse;
+uniform float u_time;
+
+
+#define ANIMATE
+
+vec2 hash2( vec2 p )
+{
+ return fract(sin(vec2(dot(p,vec2(127.1,311.7)),dot(p,vec2(269.5,183.3))))*43758.5453);
+}
+
+vec3 voronoi( in vec2 x )
+{
+    vec2 n = floor(x);
+    vec2 f = fract(x);
+
+    //----------------------------------
+    // first pass: regular voronoi
+    //----------------------------------
+	vec2 mg, mr;
+
+    float md = 8.0;
+    for( int j=-1; j<=1; j++ )
+    for( int i=-1; i<=1; i++ )
+    {
+        vec2 g = vec2(float(i),float(j));
+		vec2 o = hash2( n + g );
+		#ifdef ANIMATE
+        o = 0.5 + 0.5*sin( u_time + 6.2831*o );
+        #endif	
+        vec2 r = g + o - f;
+        float d = dot(r,r);
+
+        if( d<md )
+        {
+            md = d;
+            mr = r;
+            mg = g;
+        }
+    }
+
+    //----------------------------------
+    // second pass: distance to borders
+    //----------------------------------
+    md = 8.0;
+    for( int j=-2; j<=2; j++ )
+    for( int i=-2; i<=2; i++ )
+    {
+        vec2 g = mg + vec2(float(i),float(j));
+		vec2 o = hash2( n + g );
+		#ifdef ANIMATE
+        o = 0.5 + 0.5*sin( u_time + 6.2831*o );
+        #endif	
+        vec2 r = g + o - f;
+
+        if( dot(mr-r,mr-r)>0.00001 )
+        md = min( md, dot( 0.5*(mr+r), normalize(r-mr) ) );
+    }
+
+    return vec3( md, mr );
+}
+
+
+void main(){
+  vec2 p = gl_FragCoord.xy/u_resolution;
+
+
+    vec3 c = voronoi( 8.0*p );
+
+	// isolines
+    vec3 col = c.x*(0.5 + 0.5*sin(64.0*c.x))*vec3(1.0);
+    // borders	
+    col = mix( vec3(1.0,0.6,0.0), col, smoothstep( 0.04, 0.07, c.x ) );
+    // feature points
+	float dd = length( c.yz );
+	col = mix( vec3(1.0,0.6,0.1), col, smoothstep( 0.0, 0.12, dd) );
+	col += vec3(1.0,0.6,0.1)*(1.0-smoothstep( 0.0, 0.04, dd));
+
+	gl_FragColor = vec4(col,1.0);
+}
+
+    </script>
+    <script>
+        var container;
+        var camera, scene, renderer;
+        var uniforms;
+
+        init();
+        animate();
+
+        function init() {
+            container = document.getElementById( 'container' );
+
+            camera = new THREE.Camera();
+            camera.position.z = 1;
+
+            scene = new THREE.Scene();
+
+            var geometry = new THREE.PlaneBufferGeometry( 2, 2 );
+
+            uniforms = {
+                u_time: { type: "f", value: 1.0 },
+                u_resolution: { type: "v2", value: new THREE.Vector2() },
+                u_mouse: { type: "v2", value: new THREE.Vector2() }
+            };
+
+            var material = new THREE.ShaderMaterial( {
+                uniforms: uniforms,
+                vertexShader: document.getElementById( 'vertexShader' ).textContent,
+                fragmentShader: document.getElementById( 'fragmentShader' ).textContent
+            } );
+
+            var mesh = new THREE.Mesh( geometry, material );
+            scene.add( mesh );
+            
+
+            renderer = new THREE.WebGLRenderer();
+            renderer.setPixelRatio( window.devicePixelRatio );
+
+            container.appendChild( renderer.domElement );
+
+            onWindowResize();
+            window.addEventListener( 'resize', onWindowResize, false );
+
+            document.onmousemove = function(e){
+              uniforms.u_mouse.value.x = e.pageX
+              uniforms.u_mouse.value.y = e.pageY
+            }
+        }
+
+        function onWindowResize( event ) {
+            renderer.setSize( window.innerWidth, window.innerHeight );
+            uniforms.u_resolution.value.x = renderer.domElement.width;
+            uniforms.u_resolution.value.y = renderer.domElement.height;
+        }
+
+        function animate() {
+            requestAnimationFrame( animate );
+            render();
+        }
+
+        function render() {
+            uniforms.u_time.value += 0.05;
+            renderer.render( scene, camera );
+        }
+        
+        
+    </script>
+    
+
+
+</background>
+
