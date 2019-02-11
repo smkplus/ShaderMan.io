@@ -27,6 +27,14 @@
         #mytextarea{
             resize: none;
         }
+        
+        textarea {
+        padding: 10px;
+        line-height: 1.5;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        box-shadow: 1px 1px 1px #999;
+        }
 
             </style>
 
@@ -34,20 +42,25 @@
         
 
         <h1>ShaderMan</h1>
+        
         ShaderName:
         
         <input type="text" id = "ShaderName" name="FirstName" value="MyShader">
         
-        <br>
         
         
-        ShaderToy:
-        <br>
-        <textarea spellcheck="false" rows="12" cols="100" style="font-family:monospace" id = "Input" onkeyup="setWordOrder(event)"></textarea>   
+        
+        <h3>ShaderToy:</h3>
 
-        <br>
-        UnityShader:
-        <br>    
+        
+        <textarea spellcheck="false" rows="12" cols="100" style="font-family:monospace" id = "Input" onkeyup="setWordOrder(event)"></textarea>   
+        
+               <h1>
+          To
+        </h1>
+
+       <h3>ShaderLab:</h3>
+        
         <div height="100%" width="100%" id="b"></div>
 
         <textarea spellcheck="false" readonly ="readonly" rows="12" cols="100" style="font-family:monospace" id = "Output" onkeyup="setWordOrder(event)"></textarea>   
@@ -58,7 +71,7 @@
         </button>
         <br>
         
-    </div>
+        </div>
 
 <script>
 $(document).ready(function(){
